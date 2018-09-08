@@ -48,7 +48,7 @@ import urllib.request
 import shutil
 
 # Root directory of the project
-ROOT_DIR = os.path.abspath("../../")
+ROOT_DIR = os.path.abspath("./")
 
 # Import Mask RCNN
 sys.path.append(ROOT_DIR)  # To find local version of the library
@@ -111,7 +111,7 @@ class CocoDataset(utils.Dataset):
         coco = COCO("{}/annotations/instances_{}{}.json".format(dataset_dir, subset, year))
         if subset == "minival" or subset == "valminusminival":
             subset = "val"
-        image_dir = "{}/{}{}".format(dataset_dir, subset, year)
+        image_dir = "{}/{}{}".format(dataset_dir+"/images", subset, year)
 
         # Load all classes or a subset?
         if not class_ids:
@@ -459,14 +459,18 @@ if __name__ == '__main__':
 
     # Select weights file to load
     if args.model.lower() == "coco":
-        model_path = COCO_MODEL_PATH
+        print(0)
+       	model_path = COCO_MODEL_PATH
     elif args.model.lower() == "last":
+        print(1)
         # Find last trained weights
         model_path = model.find_last()
     elif args.model.lower() == "imagenet":
+        print(2)
         # Start from ImageNet trained weights
         model_path = model.get_imagenet_weights()
     else:
+        print(3)
         model_path = args.model
 
     # Load weights
@@ -480,7 +484,7 @@ if __name__ == '__main__':
         dataset_train = CocoDataset()
         dataset_train.load_coco(args.dataset, "train", year=args.year, auto_download=args.download)
         if args.year in '2014':
-            dataset_train.load_coco(args.dataset, "valminusminival", year=args.year, auto_download=args.download)
+            dataset_train.load_coco(args.dataset, "valminusminval", year=args.year, auto_download=args.download)
         dataset_train.prepare()
 
         # Validation dataset
